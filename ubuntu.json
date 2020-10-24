@@ -1,9 +1,9 @@
 {
   "variables": {
     "disk_size": "61440",
-    "version": "20.04",
-    "iso_url": "http://archive.ubuntu.com/ubuntu/dists/focal/main/installer-amd64/current/legacy-images/netboot/mini.iso",
-    "iso_checksum": "sha256:0e79e00bf844929d40825b1f0e8634415cda195ba23bae0b041911fde4dfe018",
+    "version": "20.10",
+    "iso_url": "http://releases.ubuntu.com/groovy/ubuntu-20.10-live-server-amd64.iso",
+    "iso_checksum": "sha256:defdc1ad3af7b661fe2b4ee861fb6fdb5f52039389ef56da6efc05e6adfe3d45",
     "hyperv_switch_name": "{{env `HYPERV_SWITCH_NAME`}}",
     "hyperv_vlan_id": "{{env `HYPERV_VLAN_ID`}}"
   },
@@ -27,22 +27,61 @@
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
       "ssh_timeout": "60m",
+      "cd_label": "cidata",
+      "cd_files": [
+        "autoinstall-cloud-init-data/user-data",
+        "autoinstall-cloud-init-data/meta-data"
+      ],
       "boot_wait": "5s",
       "boot_command": [
-        "<tab>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "linux initrd=initrd.gz",
-        " auto=true",
-        " url={{.HTTPIP}}:{{.HTTPPort}}/preseed.txt",
-        " hostname=vagrant",
+        "e",
+        "<leftCtrlOn>kkkkkkkkkkkkkkkkkkkk<leftCtrlOff>",
+        "linux /casper/vmlinuz",
         " net.ifnames=0",
-        " DEBCONF_DEBUG=5",
-        "<enter>"
+        " autoinstall",
+        "<enter>",
+        "initrd /casper/initrd",
+        "<enter>",
+        "<f10>"
+      ],
+      "shutdown_command": "echo vagrant | sudo -S poweroff"
+    },
+    {
+      "name": "ubuntu-{{user `version`}}-uefi-amd64-libvirt",
+      "type": "qemu",
+      "accelerator": "kvm",
+      "qemuargs": [
+        ["-bios", "/usr/share/ovmf/OVMF.fd"],
+        ["-m", "2048"],
+        ["-smp", "2"]
+      ],
+      "headless": true,
+      "http_directory": ".",
+      "format": "qcow2",
+      "disk_size": "{{user `disk_size`}}",
+      "disk_interface": "virtio-scsi",
+      "disk_discard": "unmap",
+      "iso_url": "{{user `iso_url`}}",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_timeout": "60m",
+      "cd_label": "cidata",
+      "cd_files": [
+        "tmp/libvirt-uefi-autoinstall-cloud-init-data/user-data",
+        "autoinstall-cloud-init-data/meta-data"
+      ],
+      "boot_wait": "5s",
+      "boot_command": [
+        "e",
+        "<leftCtrlOn>kkkkkkkkkkkkkkkkkkkk<leftCtrlOff>",
+        "linux /casper/vmlinuz",
+        " net.ifnames=0",
+        " autoinstall",
+        "<enter>",
+        "initrd /casper/initrd",
+        "<enter>",
+        "<f10>"
       ],
       "shutdown_command": "echo vagrant | sudo -S poweroff"
     },
@@ -74,22 +113,22 @@
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
       "ssh_timeout": "60m",
+      "cd_label": "cidata",
+      "cd_files": [
+        "autoinstall-cloud-init-data/user-data",
+        "autoinstall-cloud-init-data/meta-data"
+      ],
       "boot_wait": "5s",
       "boot_command": [
-        "<tab>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
-        "linux initrd=initrd.gz",
-        " auto=true",
-        " url={{.HTTPIP}}:{{.HTTPPort}}/preseed.txt",
-        " hostname=vagrant",
+        "e",
+        "<leftCtrlOn>kkkkkkkkkkkkkkkkkkkk<leftCtrlOff>",
+        "linux /casper/vmlinuz",
         " net.ifnames=0",
-        " DEBCONF_DEBUG=5",
-        "<enter>"
+        " autoinstall",
+        "<enter>",
+        "initrd /casper/initrd",
+        "<enter>",
+        "<f10>"
       ],
       "shutdown_command": "echo vagrant | sudo -S poweroff",
       "post_shutdown_delay": "2m"
@@ -113,18 +152,22 @@
       "ssh_timeout": "60m",
       "first_boot_device": "DVD",
       "boot_order": ["SCSI:0:0"],
+      "cd_label": "cidata",
+      "cd_files": [
+        "tmp/hyperv-autoinstall-cloud-init-data/user-data",
+        "autoinstall-cloud-init-data/meta-data"
+      ],
       "boot_wait": "5s",
       "boot_command": [
-        "<esc>",
-        "linux /linux",
-        " auto=true",
-        " url={{.HTTPIP}}:{{.HTTPPort}}/tmp/preseed-hyperv.txt",
-        " hostname=vagrant",
+        "e",
+        "<leftCtrlOn>kkkkkkkkkkkkkkkkkkkk<leftCtrlOff>",
+        "linux /casper/vmlinuz",
         " net.ifnames=0",
-        " DEBCONF_DEBUG=5",
+        " autoinstall",
         "<enter>",
-        "initrd /initrd.gz<enter>",
-        "boot<enter>"
+        "initrd /casper/initrd",
+        "<enter>",
+        "<f10>"
       ],
       "shutdown_command": "echo vagrant | sudo -S poweroff"
     }
@@ -157,7 +200,20 @@
     {
       "type": "vagrant",
       "output": "{{.BuildName}}.box",
-      "vagrantfile_template": "Vagrantfile.template"
+      "vagrantfile_template": "Vagrantfile.template",
+      "only": [
+        "ubuntu-{{user `version`}}-amd64-libvirt",
+        "ubuntu-{{user `version`}}-amd64-virtualbox",
+        "ubuntu-{{user `version`}}-amd64-hyperv"
+      ]
+    },
+    {
+      "type": "vagrant",
+      "output": "{{.BuildName}}.box",
+      "vagrantfile_template": "Vagrantfile-uefi.template",
+      "only": [
+        "ubuntu-{{user `version`}}-uefi-amd64-libvirt"
+      ]
     }
   ]
 }
